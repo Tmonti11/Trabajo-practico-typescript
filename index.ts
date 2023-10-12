@@ -22,13 +22,11 @@ type ServerResponse = {
   results: Person[];
 };
 
-// Global variables
+
 let displayedPeople: Person[] = [];
 let sortBy: { [key: string]: 'asc' | 'desc' | null } = {};
 
-// Utils
 function drawTable(people: Person[]) {
-  // Prepare table HTML
   let tableHTML: string = `
   <thead>
     <tr>
@@ -40,17 +38,15 @@ function drawTable(people: Person[]) {
   </thead>
   <tbody>
   `;
-  // Loop thru all characters to generate rows of the table
   people.forEach((p: Person) => {
     tableHTML += `<tr><td>${p.name}</td><td>${p.birth_year}</td><td>${p.gender}</td><td>${p.url}</td></tr>`;
   });
-  // Close table body
+
   tableHTML += '</tbody>';
-  // Grab table element to set its inner HTML
   document.querySelector('#tableElement')!.innerHTML = tableHTML;
 }
 
-// Handlers
+
 function paginatePeople(page: number) {
   fetch(`https://swapi.dev/api/people/?page=${page}`)
     .then(res => res.json())
@@ -61,7 +57,6 @@ function paginatePeople(page: number) {
 }
 
 function filterPeople(value: string) {
-  // @ts-ignore
   const filteredPeople: Person[] = displayedPeople.filter((p: Person) => p.name.toLowerCase().includes(value.toLowerCase()) || p.birth_year.toLowerCase().includes(value.toLowerCase()) || p.gender.toLowerCase().includes(value.toLowerCase()) || p.url.toLowerCase().includes(value.toLowerCase()));
 
   drawTable(filteredPeople);
@@ -78,7 +73,7 @@ function sortPeople(prop: string) {
     sortBy = { [prop]: 'asc' };
   }
 
-  // @ts-ignore
+
   const sortedPeople: Person[] = displayedPeople.toSorted((a: Person, b: Person) => {
     if (sortBy[prop] === 'asc') {
       return a[prop] > b[prop] ? 1 : a[prop] < b[prop] ? -1 : 0;
@@ -96,7 +91,6 @@ fetch('https://swapi.dev/api/people')
   .then(res => res.json())
   .then((data: ServerResponse) => {
     displayedPeople = data.results;
-    // We invoke the draw table function with the 10 initials characters
     drawTable(data.results);
 
     const pages: number = Math.ceil(data.count / 10);
